@@ -1,8 +1,7 @@
 import platform
-from platform import processor
-
 import psutil
 import socket
+import getpass
 import wmi
 
 def system_version():
@@ -55,16 +54,47 @@ class RAMInfo:
         print("Total available: " + str(round(RAM_stats.available_memory, 3)) + "GB")
         print("Total used: " + str(round(RAM_stats.used_memory, 3)) + "GB \n")
 
-def host_name():
+class MonitorInfo:
+    def __init__(self):
+        self.c = wmi.WMI()
+        self.monitors = self._get_monitors()
+
+    def _get_monitors(self):
+        return self.c.WIN32_DesktopMonitor()
+
+    def get_monitor_info(self):
+        info = []
+        for monitor in self.monitors:
+            info.append({
+                "Name": monitor.Name,
+                "Screen Width": monitor.ScreenWidth,
+                "Screen Height": monitor.ScreenHeight,
+                "Monitor Type": monitor.MonitorType
+            })
+        return info
+
+    def display_monitor_info(self):
+        print("Monitors: ")
+        for index, monitor in enumerate(self.get_monitor_info(), start = 1):
+            print("Monitor: " + str(index))
+            for key, value in monitor.items():
+                print(str(key) + str(value))
+        print("")
+
+def get_host_name():
     return socket.gethostname()
-def host_address():
+
+def get_host_address():
     return socket.gethostbyname(socket.gethostname())
+
+def get_domain_user_name():
+    return getpass.getuser()
 
 if __name__ == '__main__':
 
     print("------------------------------------------------------------------------")
     system_version = system_version()
-    print("System: " + str(system_version))
+    print("System: " + str(system_version) + "\n")
 
     processor_stats = ProcessorInfo()
     processor_stats.display_processor_info()
@@ -72,9 +102,12 @@ if __name__ == '__main__':
     RAM_stats = RAMInfo()
     RAM_stats.display_ram_info()
 
+    monitor_stats = MonitorInfo()
+    monitor_stats.display_monitor_info()
+
     print("Host: ")
-    host_name = host_name()
-    print("Host name: " + str(host_name))
-    host_address = host_address()
-    print("Host address: " + str(host_address))
+    print("Host name: " + str(get_host_name()))
+    print("Host address: " + str(get_host_address()))
+    print("Domain user name: " + str(get_domain_user_name()))
+
     print("------------------------------------------------------------------------")
