@@ -1,6 +1,4 @@
 import json
-
-import requests
 class Product:
     id = 0
     name = "produkt"
