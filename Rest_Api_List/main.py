@@ -1,5 +1,5 @@
-from flask import Flask, jsonify, abort
-from data import products_list
+from flask import Flask, jsonify, abort, request
+from data import products_list, Product
 
 app = Flask(__name__)
 
@@ -19,9 +19,23 @@ def get_products(product_id):
 
 @app.route('/delete/product/<int:product_id>', methods = ['DELETE'])
 def delete_products(product_id):
+    global products_list
     product = next((item for item in products_list if item.id == product_id), None)
     if product:
-        products_list = [item for item in products_list if item["id"] != product_id]
+        products_list = [item for item in products_list if item.id != product_id]
+        return jsonify({"message": "Product deleted succesfully"})
+    else:
+        abort(404)
+
+@app.route('/create/product', methods = ['POST'])
+def add_products():
+    print(request.json)
+    if not request.json or 'id' not in request.json or 'name' not in request.json or 'weight' not in request.json:
+        abort(404)
+    data = request.json
+    new_product = Product(data['id'], data['name'], data['weight'])
+    products_list.append(new_product)
+    return (new_product.toJson())
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
