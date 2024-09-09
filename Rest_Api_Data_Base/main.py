@@ -37,7 +37,7 @@ def get_product(product_id):
 
 @app.route('/product', methods=['POST'])
 def add_product():
-    if not request.json or 'name' in request.json or 'weight' in request.json or 'price' in request.json:
+    if not request.json or 'name' not in request.json or 'weight' not in request.json or 'price' not in request.json:
        abort(404)
 
     data = request.json
@@ -47,10 +47,23 @@ def add_product():
 
     cur = mysql.connection.cursor()
     cur.execute('INSERT INTO products(name,weight,price)  VALUES (%s, %s, %s)', (name, weight, price))
-    mysql.connection.cursor()
+    mysql.connection.commit()
     cur.close()
 
-    return jsonify({'message:': 'Product added successfully'}), 201
+    return jsonify({'message': 'Product added successfully'}), 201
+
+@app.route('/delete/product/<int:product_id>', methods = ['DELETE'])
+def delete_products(product_id):
+
+    cur = mysql.connection.cursor()
+    cur.execute('DELETE FROM products WHERE id = %s', (product_id,))
+    mysql.connection.commit()
+    cur.close()
+
+    if cur.rowcount:
+        return jsonify({"message": "Product deleted successfully"}), 200
+    else:
+        abort(404)
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
