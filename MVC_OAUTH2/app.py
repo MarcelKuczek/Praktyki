@@ -28,6 +28,19 @@ spotify = oauth.register(
     client_kwargs={'scope': 'user-read-email user-read-private'},
 )
 
+@app.route('/playlist')
+def get_playlist():
+    token = session.get('token', default=None)
+    if token is None:
+        return redirect(url_for('login'))
+    access_token = token['access_token']
+    headers = {'Authorization': f'Bearer {access_token}'}
+    playlist_response = requests.get('https://api.spotify.com/v1/me/playlists', headers = headers)
+    playlist_data = playlist_response.json()
+    playlist = playlist_data.get('items', [])
+    playlist_name = [playlist.get('name') for playlist in playlist]
+    return playlist_name
+
 @app.route('/')
 def index():
     token = session.get('token', default=None)
@@ -36,8 +49,9 @@ def index():
     access_token = token['access_token']
     headers = {'Authorization': f'Bearer {access_token}'}
     user_response = requests.get('https://api.spotify.com/v1/me', headers = headers)
+    playlist = get_playlist()
     user = user_response.json()
-    return render_template('index.html', user=user)
+    return render_template('index.html', user=user, playlist = playlist)
 
 @app.route('/login')
 def login():

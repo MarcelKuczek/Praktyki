@@ -12,7 +12,11 @@
     <main id="core">
         <article id="content">
             <h2>Playlisty:</h2>
-
+            <ul>
+                {% for playlist in playlists %}
+                    <li>{{ playlist }}</li>
+                {% endfor %}
+            </ul>
         </article>
     </main>
     {% else %}
