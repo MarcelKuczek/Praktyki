@@ -47,15 +47,20 @@ def login():
 @app.route('/authorize')
 def authorize():
     token = spotify.authorize_access_token()
-    print(token)
+    session['token'] = token
     resp = spotify.get('https://api.spotify.com/v1/me')
-    user_info = resp.json()
+
     # playlist_resp = spotify.get('https://api.spotify.com/v1/me/playlists')
     # playlist_info = playlist_resp.json()
-    session['user'] = user_info
-    #session['token'] = token
+
     # session['playlists'] = playlist_info
     return redirect('/')
+
+@app.route('/', method = ['GET'])
+def get_user:
+    resp = spotify.get('https://api.spotify.com/v1/me')
+    user_info = resp.json()
+    session['user'] = user_info
 
 @app.route('/logout')
 def logout():
