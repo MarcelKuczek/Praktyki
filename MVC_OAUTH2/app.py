@@ -23,6 +23,7 @@ spotify = oauth.register(
     authorize_params = None,
     access_token_params = None,
     userinfo_endpoint='https://api.spotify.com/v1/me',
+    userplaylist_endpoint = 'https://api.spotify.com/v1/me/playlists',
     client_kwargs={'scope': 'user-read-email user-read-private'},
 )
 
@@ -41,10 +42,12 @@ def login():
 @app.route('/authorize')
 def authorize():
     token = spotify.authorize_access_token()
-    print(token)
     resp = spotify.get('https://api.spotify.com/v1/me')
     user_info = resp.json()
+    playlist_resp = spotify.get('https://api.spotify.com/v1/me/playlists')
+    playlist_info = playlist_resp.json()
     session['user'] = user_info
+    session['playlists'] = playlist_info
     return redirect('/')
 
 @app.route('/logout')
