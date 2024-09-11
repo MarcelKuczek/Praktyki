@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head></head>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+</head>
 <body>
-{% if user %}
-<h1><a href = "{{url_for('logout')}}">Wyloguj się</a></h1>
-{% else %}
-<h1><a href = "{{url_for('login') }}">Zaloguj się</a></h1>
-{% endif %}
+    {% if user %}
+    <header id="heading">
+        <div id="loginout"><a href = "{{url_for('logout')}}">Wyloguj się</a></div>
+        <div id="currentuser">Current user: {{user['display_name']}}</div>
+    </header>
+    <main id="core">
+        <article id="content">
+
+        </article>
+    </main>
+    {% else %}
+    <header id="heading">
+        <div id="loginout"><a href = "{{url_for('login') }}">Zaloguj się</a></div>
+    </header>
+    {% endif %}
+
 </body>
 </html>

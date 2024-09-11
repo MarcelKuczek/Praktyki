@@ -42,11 +42,12 @@ def login():
 def authorize():
     token = spotify.authorize_access_token()
     print(token)
-    resp = spotify.get('me')
+    resp = spotify.get('https://api.spotify.com/v1/me')
     user_info = resp.json()
     session['user'] = user_info
     return redirect('/')
 
+@app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect('/')
