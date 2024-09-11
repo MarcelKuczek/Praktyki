@@ -28,26 +28,20 @@ spotify = oauth.register(
     client_kwargs={'scope': 'user-read-email user-read-private'},
 )
 
+@app.route('/spotify-user')
+def test():
+    token = session.get('token')
+    resp = requests.get('https://api.spotify.com/v1/me', headers={'Authorization': f'Bearer {token}'})
+    return resp.json()
+
 @app.route('/')
 def index():
-    token = session.get('token')
-    access_token = 'Your_access_token'
-    url = 'https://api.spotify.com/v1/me'
-    headers = {
-        'Autorization': f'Bearer {access_token}'
-    }
-    response = requests.get(url, headers = headers)
-    print(response)
-    token = session.get('token', default=None)
-    print(f"Token: {token}")
+    token = session.get('token')['access_token']
     if token is None:
-        user = session.get('user')
-        return render_template('index.html', user=user)
 
-    access_token = token['access_token']
-    print (access_token)
-    #user = requests.get('', headers={ 'Authorization': 'Bearer {token}' } ) json
-    return render_template('index.html', user=None)
+    user_response = requests.get('https://api.spotify.com/v1/me', headers={'Authorization': f'Bearer {token}'})
+    user = user_response.json()
+    return render_template('index.html', user=user)
 
 @app.route('/login')
 def login():
