@@ -8,14 +8,14 @@ body{
 a:visited{
     color:aliceblue;   
 }
-#heading{
+.heading{
     background-color: green;
     padding: 20px;
     justify-content: space-between;
     align-items: center;
     display: flex;
 }
-#loginout{
+.loginout{
     width: 50%;
     font-size: 20px;
 }
