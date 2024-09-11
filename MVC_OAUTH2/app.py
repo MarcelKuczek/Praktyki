@@ -30,12 +30,11 @@ spotify = oauth.register(
 @app.route('/')
 def index():
     user = session.get('user')
-    #try:
-    #    playlists = spotify.get('https://api.spotify.com/v1/me/playlists').json()
-    #except Exception as e:
-    #    print(repr(e))
-    #playlists={'href': 'test'}
+    token = session.get('token')
+    access_token = token['access_token']
+    print (access_token)
     return render_template('index.html', user=user)
+
 
 @app.route('/login')
 def login():
@@ -47,24 +46,17 @@ def login():
 @app.route('/authorize')
 def authorize():
     token = spotify.authorize_access_token()
+    print(token)
     session['token'] = token
-    resp = spotify.get('https://api.spotify.com/v1/me')
-
-    # playlist_resp = spotify.get('https://api.spotify.com/v1/me/playlists')
-    # playlist_info = playlist_resp.json()
-
-    # session['playlists'] = playlist_info
-    return redirect('/')
-
-@app.route('/', method = ['GET'])
-def get_user:
     resp = spotify.get('https://api.spotify.com/v1/me')
     user_info = resp.json()
     session['user'] = user_info
+    return redirect('/')
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
+    session.pop('token', None)
     return redirect('/')
 
 if __name__ == '__main__':
