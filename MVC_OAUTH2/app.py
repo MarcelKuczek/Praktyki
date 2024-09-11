@@ -1,8 +1,9 @@
 import string
 import random
-
+from os import access
 from authlib.common.urls import unquote
-from flask import Flask, render_template,session, url_for, redirect, request
+from flask import Flask, render_template,session, url_for, redirect
+import requests
 from authlib.integrations.flask_client import OAuth
 import os
 
@@ -29,12 +30,24 @@ spotify = oauth.register(
 
 @app.route('/')
 def index():
-    user = session.get('user')
     token = session.get('token')
+    access_token = 'Your_access_token'
+    url = 'https://api.spotify.com/v1/me'
+    headers = {
+        'Autorization': f'Bearer {access_token}'
+    }
+    response = requests.get(url, headers = headers)
+    print(response)
+    token = session.get('token', default=None)
+    print(f"Token: {token}")
+    if token is None:
+        user = session.get('user')
+        return render_template('index.html', user=user)
+
     access_token = token['access_token']
     print (access_token)
-    return render_template('index.html', user=user)
-
+    #user = requests.get('', headers={ 'Authorization': 'Bearer {token}' } ) json
+    return render_template('index.html', user=None)
 
 @app.route('/login')
 def login():
