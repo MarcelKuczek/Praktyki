@@ -38,20 +38,19 @@ def get_playlist():
     playlist_response = requests.get('https://api.spotify.com/v1/me/playlists', headers = headers)
     playlist_data = playlist_response.json()
     playlists = playlist_data.get('items', [])
-    playlist_names = [playlist.get('name') for playlist in playlists]
-    return playlist_names
+    return [playlist.get('name') for playlist in playlists]
 
 @app.route('/')
 def index():
     token = session.get('token', default=None)
     if token is None:
-        return render_template('index.html', user=None)
+        return render_template('index.html', user=None, playlist = [])
     access_token = token['access_token']
     headers = {'Authorization': f'Bearer {access_token}'}
     user_response = requests.get('https://api.spotify.com/v1/me', headers = headers)
     user = user_response.json()
     playlist_names = get_playlist()
-    return render_template('index.html', user=user, playlist = playlist_names)
+    return render_template('index.html', user=user, playlists = playlist_names)
 
 @app.route('/login')
 def login():

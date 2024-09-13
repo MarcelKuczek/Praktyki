@@ -1,30 +1,30 @@
-def removeSpace():
+def removeSpace(operation):
     j = -1
     for i in operation:
         j +=1
         if i == " ":
             operation.pop(j)
 
-def change_to_previosu():
+def change_to_previosu(operation):
     j = -1
     for i in operation:
         j +=1
         if i == "_":
             operation[j] = int(previous_result)
 
-def add(resault, i):
+def add(resault, i, operation):
     return resault + int(operation [i+1])
 
-def sub(resault, i):
+def sub(resault, i, operation):
     return resault - int(operation [i+1])
 
-def mul(resault, i):
+def mul(resault, i, operation):
     return resault * int(operation [i+1])
 
-def div(resault, i):
+def div(resault, i, operation):
     return resault / int(operation [i+1])
 
-def agg(resault, i):
+def agg(resault, i, operation):
     return resault ** int(operation [i+1])
 
 previous_result = 0
@@ -36,23 +36,23 @@ while(True):
         break
 
     operation = list(operation)
-    removeSpace()
-    change_to_previosu()
+    removeSpace(operation)
+    change_to_previosu(operation)
     resault = int(operation[0])
     
     i = -1
     for char in operation:
         i +=1
         if char == "+":
-            resault = add(resault, i)
+            resault = add(resault, i, operation)
         if char == "-":
-            resault = sub(resault, i)
+            resault = sub(resault, i, operation)
         if char == "*":
-            resault = mul(resault, i)
+            resault = mul(resault, i, operation)
         if char == "/":
-            resault = div(resault, i)
+            resault = div(resault, i, operation)
         if char == "^":
-            resault = agg(resault, i)
+            resault = agg(resault, i, operation)
 
     previous_result = resault 
     print("Result is: " + str(resault))

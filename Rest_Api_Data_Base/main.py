@@ -1,5 +1,3 @@
-from idlelib.rpc import request_queue
-
 from flask import Flask, jsonify, request, abort
 from flask_mysqldb import MySQL
 
